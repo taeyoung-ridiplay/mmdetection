@@ -8,9 +8,9 @@ import sys
 import warnings
 from setuptools import find_packages, setup
 
-import torch
-from torch.utils.cpp_extension import (BuildExtension, CppExtension,
-                                       CUDAExtension)
+# import torch
+# from torch.utils.cpp_extension import (BuildExtension, CppExtension,
+#                                        CUDAExtension)
 
 
 def readme():
@@ -28,29 +28,29 @@ def get_version():
     return locals()['__version__']
 
 
-def make_cuda_ext(name, module, sources, sources_cuda=[]):
+# def make_cuda_ext(name, module, sources, sources_cuda=[]):
 
-    define_macros = []
-    extra_compile_args = {'cxx': []}
+#     define_macros = []
+#     extra_compile_args = {'cxx': []}
 
-    if torch.cuda.is_available() or os.getenv('FORCE_CUDA', '0') == '1':
-        define_macros += [('WITH_CUDA', None)]
-        extension = CUDAExtension
-        extra_compile_args['nvcc'] = [
-            '-D__CUDA_NO_HALF_OPERATORS__',
-            '-D__CUDA_NO_HALF_CONVERSIONS__',
-            '-D__CUDA_NO_HALF2_OPERATORS__',
-        ]
-        sources += sources_cuda
-    else:
-        print(f'Compiling {name} without CUDA')
-        extension = CppExtension
+#     if torch.cuda.is_available() or os.getenv('FORCE_CUDA', '0') == '1':
+#         define_macros += [('WITH_CUDA', None)]
+#         extension = CUDAExtension
+#         extra_compile_args['nvcc'] = [
+#             '-D__CUDA_NO_HALF_OPERATORS__',
+#             '-D__CUDA_NO_HALF_CONVERSIONS__',
+#             '-D__CUDA_NO_HALF2_OPERATORS__',
+#         ]
+#         sources += sources_cuda
+#     else:
+#         print(f'Compiling {name} without CUDA')
+#         extension = CppExtension
 
-    return extension(
-        name=f'{module}.{name}',
-        sources=[os.path.join(*module.split('.'), p) for p in sources],
-        define_macros=define_macros,
-        extra_compile_args=extra_compile_args)
+#     return extension(
+#         name=f'{module}.{name}',
+#         sources=[os.path.join(*module.split('.'), p) for p in sources],
+#         define_macros=define_macros,
+#         extra_compile_args=extra_compile_args)
 
 
 def parse_requirements(fname='requirements.txt', with_version=True):
@@ -220,5 +220,4 @@ if __name__ == '__main__':
             'multimodal': parse_requirements('requirements/multimodal.txt'),
         },
         ext_modules=[],
-        cmdclass={'build_ext': BuildExtension},
         zip_safe=False)
